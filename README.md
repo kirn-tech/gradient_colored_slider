@@ -1,6 +1,6 @@
 # Gradient Colored Slider
 
-A GradientColoredSlider slider.
+Gradient Colored Slider.
 
 Used to select from a range of values.
 
