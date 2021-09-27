@@ -53,7 +53,7 @@ import 'dart:math' as math;
 ///
 /// By default, a slider will be as wide as possible, centered vertically. When
 /// given unbounded constraints, it will attempt to make the track 144 pixels
-/// wide ([GradientColoredSliderRender._minPreferredTrackWidth] with half of
+/// wide ([_GradientColoredSliderRender._minPreferredTrackWidth] with half of
 /// thumb [RoundThumbShape.enabledThumbRadius] margins on each side)
 /// and will shrink-wrap vertically.
 ///
@@ -295,8 +295,8 @@ class _GradientColoredSliderRenderObjectWidget extends LeafRenderObjectWidget {
       : super(key: key);
 
   @override
-  GradientColoredSliderRender createRenderObject(BuildContext context) {
-    return GradientColoredSliderRender(
+  _GradientColoredSliderRender createRenderObject(BuildContext context) {
+    return _GradientColoredSliderRender(
         desiredBarWidth: barWidth,
         desiredBarSpace: barSpace,
         gradientColors: gradientColors,
@@ -308,7 +308,7 @@ class _GradientColoredSliderRenderObjectWidget extends LeafRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, GradientColoredSliderRender renderObject) {
+  void updateRenderObject(BuildContext context, _GradientColoredSliderRender renderObject) {
     renderObject
       ..onChanged = onChanged
       ..onChangeStart = onChangeStart
@@ -319,7 +319,7 @@ class _GradientColoredSliderRenderObjectWidget extends LeafRenderObjectWidget {
   }
 }
 
-class GradientColoredSliderRender extends RenderBox {
+class _GradientColoredSliderRender extends RenderBox {
   static const double _minPreferredTrackWidth = 144.0;
   static const double _minPreferredTrackHeight = 36.0;
 
@@ -348,7 +348,7 @@ class GradientColoredSliderRender extends RenderBox {
 
   double _currentDragValue = 0.0;
 
-  GradientColoredSliderRender({
+  _GradientColoredSliderRender({
     required double value,
     required List<Color> gradientColors,
     required _GradientColoredSliderState state,
@@ -526,7 +526,7 @@ class GradientColoredSliderRender extends RenderBox {
     assert(value >= 0.0);
     if (_desiredBarWidth == value) return;
     _desiredBarWidth = value;
-    _computeLineSizes(size);
+    _computeBarSize(size);
     markNeedsPaint();
   }
 
@@ -534,7 +534,7 @@ class GradientColoredSliderRender extends RenderBox {
     assert(value >= 0.0);
     if (_desiredBarSpace == value) return;
     _desiredBarSpace = value;
-    _computeLineSizes(size);
+    _computeBarSize(size);
     markNeedsPaint();
   }
 
@@ -560,12 +560,12 @@ class GradientColoredSliderRender extends RenderBox {
   @override
   set size(Size value) {
     if (!hasSize || size != value) {
-      _computeLineSizes(value);
+      _computeBarSize(value);
     }
     super.size = value;
   }
 
-  _computeLineSizes(Size value) {
+  _computeBarSize(Size value) {
     _thumbShape = RoundThumbShape(
         enabledThumbRadius: value.height / 2 - RoundThumbShape.marginRingWidth,
         disabledThumbRadius: value.height / 2 - RoundThumbShape.marginRingWidth,
@@ -597,6 +597,9 @@ class GradientColoredSliderRender extends RenderBox {
 
   @override
   bool get sizedByParent => true;
+
+  @override
+  bool get isRepaintBoundary => true;
 
   @override
   void paint(PaintingContext context, Offset offset) {
