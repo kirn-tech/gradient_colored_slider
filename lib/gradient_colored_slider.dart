@@ -272,6 +272,10 @@ class _GradientColoredSliderState extends State<GradientColoredSlider> with Tick
   }
 }
 
+/// A RenderObjectWidget to leverage RenderBox API.
+///
+/// Since the slider doesn't have children - LeafRenderObjectWidget is used.
+///
 class _GradientColoredSliderRenderObjectWidget extends LeafRenderObjectWidget {
   final ValueChanged<double>? onChangeStart;
   final ValueChanged<double>? onChangeEnd;
