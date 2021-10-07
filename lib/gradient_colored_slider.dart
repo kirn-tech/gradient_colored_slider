@@ -80,15 +80,14 @@ class GradientColoredSlider extends StatefulWidget {
   /// You can override slider track gradient colors with the [gradientColors] property,
   /// as well as tracks [barWidth] and [barSpace] properties.
 
-  const GradientColoredSlider(
-      {required this.value,
-      required this.onChanged,
-      this.onChangeStart,
-      this.onChangeEnd,
-      this.barWidth = _defaultBarWidth,
-      this.barSpace = _defaultBarSpace,
-      this.gradientColors = _defaultGradientColors,
-      Key? key})
+  const GradientColoredSlider({required this.value,
+    required this.onChanged,
+    this.onChangeStart,
+    this.onChangeEnd,
+    this.barWidth = _defaultBarWidth,
+    this.barSpace = _defaultBarSpace,
+    this.gradientColors = _defaultGradientColors,
+    Key? key})
       : super(key: key);
 
   /// The currently selected value for this slider.
@@ -286,16 +285,15 @@ class _GradientColoredSliderRenderObjectWidget extends LeafRenderObjectWidget {
   final _GradientColoredSliderState state;
   final List<Color> gradientColors;
 
-  _GradientColoredSliderRenderObjectWidget(
-      {required this.value,
-      required this.state,
-      required this.barWidth,
-      required this.barSpace,
-      required this.gradientColors,
-      this.onChanged,
-      this.onChangeStart,
-      this.onChangeEnd,
-      Key? key})
+  _GradientColoredSliderRenderObjectWidget({required this.value,
+    required this.state,
+    required this.barWidth,
+    required this.barSpace,
+    required this.gradientColors,
+    this.onChanged,
+    this.onChangeStart,
+    this.onChangeEnd,
+    Key? key})
       : super(key: key);
 
   @override
@@ -329,7 +327,6 @@ class _GradientColoredSliderRender extends RenderBox {
 
   static const _defaultBarWidth = 4.0;
   static const _defaultBarSpace = 2.0;
-  static const _aspectRatio = 1 / 5;
 
   late double _desiredBarWidth;
   late double _desiredBarSpace;
@@ -361,7 +358,8 @@ class _GradientColoredSliderRender extends RenderBox {
     ValueChanged<double>? onChangeStart,
     ValueChanged<double>? onChangeEnd,
     ValueChanged<double>? onChanged,
-  })  : _state = state,
+  })
+      : _state = state,
         onChangeStart = onChangeStart,
         onChangeEnd = onChangeEnd,
         _value = value,
@@ -507,11 +505,15 @@ class _GradientColoredSliderRender extends RenderBox {
   // are relative to the sliders origin. Therefore, the offset is passed as
   // (0,0).
   Rect get _trackRect =>
-      Rect.fromPoints(Offset.zero, Offset(size.width - _thumbShape.getPreferredSize(isInteractive).width, size.height));
+      Rect.fromPoints(Offset.zero, Offset(size.width - _thumbShape
+          .getPreferredSize(isInteractive)
+          .width, size.height));
 
   double _getValueFromGlobalPosition(Offset globalPosition) {
     final double visualPosition =
-        (globalToLocal(globalPosition).dx - _trackRect.left - _thumbShape.getPreferredSize(isInteractive).width / 2) /
+        (globalToLocal(globalPosition).dx - _trackRect.left - _thumbShape
+            .getPreferredSize(isInteractive)
+            .width / 2) /
             _trackRect.width;
     return visualPosition;
   }
@@ -544,19 +546,27 @@ class _GradientColoredSliderRender extends RenderBox {
 
   @override
   double computeMinIntrinsicWidth(double height) =>
-      _minPreferredTrackWidth + _thumbShape.getPreferredSize(isInteractive).width;
+      _minPreferredTrackWidth + _thumbShape
+          .getPreferredSize(isInteractive)
+          .width;
 
   @override
   double computeMaxIntrinsicWidth(double height) =>
-      _minPreferredTrackWidth + _thumbShape.getPreferredSize(isInteractive).width;
+      _minPreferredTrackWidth + _thumbShape
+          .getPreferredSize(isInteractive)
+          .width;
 
   @override
   double computeMinIntrinsicHeight(double width) =>
-      math.max(_minPreferredTrackHeight, _thumbShape.getPreferredSize(isInteractive).height);
+      math.max(_minPreferredTrackHeight, _thumbShape
+          .getPreferredSize(isInteractive)
+          .height);
 
   @override
   double computeMaxIntrinsicHeight(double width) =>
-      math.max(_minPreferredTrackHeight, _thumbShape.getPreferredSize(isInteractive).height);
+      math.max(_minPreferredTrackHeight, _thumbShape
+          .getPreferredSize(isInteractive)
+          .height);
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -586,17 +596,8 @@ class _GradientColoredSliderRender extends RenderBox {
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
-    double width = constraints.hasBoundedWidth
-        ? constraints.maxWidth
-        : _minPreferredTrackWidth + _thumbShape.getPreferredSize(isInteractive).width;
-    double height = constraints.hasBoundedHeight
-        ? constraints.maxHeight
-        : math.max(_minPreferredTrackHeight, _thumbShape.getPreferredSize(isInteractive).height);
-
-    final maxHeight = width * _aspectRatio;
-    height = height > maxHeight ? maxHeight : height;
-
-    return Size(width, height);
+    return Size(constraints.hasBoundedWidth ? constraints.maxWidth : _minPreferredTrackWidth,
+        constraints.hasBoundedHeight ? constraints.maxHeight : _minPreferredTrackHeight);
   }
 
   @override
@@ -610,7 +611,7 @@ class _GradientColoredSliderRender extends RenderBox {
     final canvas = context.canvas;
     final left = offset.dx;
     final right = size.width + left;
-    final top = offset.dy;
+    final top = size.height / 2 - size.height / 2;
     final bottom = top + size.height;
 
     final Rect drawRect = Rect.fromLTRB(left, top, right, bottom);
@@ -629,7 +630,7 @@ class _GradientColoredSliderRender extends RenderBox {
     _thumbShape.paint(context, thumbCenter,
         activationAnimation: _thumbAnimation,
         enableAnimation: _enableAnimation,
-        parentBox: this,
+        size: size,
         value: _value,
         thumbCenter: thumbCenter);
   }
@@ -656,15 +657,16 @@ class _GradientColoredSliderRender extends RenderBox {
     path.lineTo(endX, _lineEdgeRadius);
     path.arcToPoint(Offset(beginX, _lineEdgeRadius), radius: Radius.circular(_lineEdgeRadius * 2), clockwise: false);
     canvas.drawPath(
-        path, Paint()..color = _getCurrentColor(lineNumber / _adjustedBarCount, _gradientColors, _gradientStops));
+        path, Paint()
+      ..color = _getCurrentColor(lineNumber / _adjustedBarCount, _gradientColors, _gradientStops));
   }
 }
 
 class RoundThumbShape {
   /// Create a slider thumb that draws a circle.
   const RoundThumbShape({
-    this.enabledThumbRadius = 10.0,
-    this.disabledThumbRadius = 8,
+    required this.enabledThumbRadius,
+    this.disabledThumbRadius,
     this.elevation = 1.0,
     this.pressedElevation = 6.0,
     required this.gradientColors,
@@ -698,18 +700,21 @@ class RoundThumbShape {
     return Size.fromRadius(isEnabled == true ? enabledThumbRadius : _disabledThumbRadius);
   }
 
-  void paint(
-    PaintingContext context,
-    Offset center, {
-    required Animation<double> activationAnimation,
-    required Animation<double> enableAnimation,
-    required RenderBox parentBox,
-    required double value,
-    required Offset thumbCenter,
-  }) {
+  void paint(PaintingContext context,
+      Offset center, {
+        required Animation<double> activationAnimation,
+        required Animation<double> enableAnimation,
+        required double value,
+        required Size size,
+        required Offset thumbCenter,
+      }) {
     final Canvas canvas = context.canvas;
+
+    final height = size.height;
+    final enabledThumbRadius = height / 2 - RoundThumbShape.marginRingWidth;
+    final disabledThumbRadius = height / 2 - RoundThumbShape.marginRingWidth;
     final Tween<double> radiusTween = Tween<double>(
-      begin: _disabledThumbRadius,
+      begin: disabledThumbRadius,
       end: enabledThumbRadius,
     );
 
@@ -748,11 +753,8 @@ class RoundThumbShape {
         ..strokeWidth = marginRingWidth,
     );
 
-    canvas.drawCircle(
-      center,
-      radius + evaluatedElevation - 2 * marginRingWidth,
-      Paint()..color = color,
-    );
+    canvas.drawCircle(center, radius + evaluatedElevation - 2 * marginRingWidth, Paint()
+      ..color = color);
   }
 }
 

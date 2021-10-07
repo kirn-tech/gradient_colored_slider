@@ -12,6 +12,10 @@ You can customize slider track gradient colors, as well as tracks bar width and 
 	<img src="https://user-images.githubusercontent.com/88337052/132983355-4ada1fde-3dca-433c-8fb2-76fff3391dbe.gif" />
 </p>
 
+## How it's built
+
+Check the <a href="https://kirn.tech/article-drawing-in-flutter">Blog Post</a>
+
 ## Usage
 
 ```dart
@@ -29,5 +33,9 @@ You can customize slider track gradient colors, as well as tracks bar width and 
     );
   }
 ```
+
+
+
+
 
 

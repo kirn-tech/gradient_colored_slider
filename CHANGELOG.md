@@ -9,3 +9,7 @@
 ## 1.0.0+2
 
 * Docs update.
+
+## 1.0.1
+
+* Layout adjustment
