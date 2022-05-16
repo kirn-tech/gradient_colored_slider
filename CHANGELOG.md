@@ -13,3 +13,7 @@
 ## 1.0.1
 
 * Layout adjustment
+
+## 1.0.2
+
+* Android compile version upgrade
